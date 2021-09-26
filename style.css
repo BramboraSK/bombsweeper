@@ -1,0 +1,22 @@
+body {
+    text-align: center;
+}
+
+button {
+    font-size: 100%;
+    font-family: inherit;
+    border: 2px solid white;
+    padding: 2px;
+    background-color: #808080;
+    width: 30px;
+    height: 30px;
+}
+
+i {
+    pointer-events: none;
+}
+
+.clicked {
+    border: 2px solid #808080;
+    background-color: #C6C6C6;
+}
