@@ -26,7 +26,7 @@ const getAdjanced = (tiles, tile, width, height) => {
 const clicked = (button) => {
     if (!button.id.includes(","))
         return;
-    if (button.innerHTML === `<i class="fa fa-flag"></i>`)
+    if (button.innerHTML === `<i class="fa fa-flag" aria-hidden="true"></i>`)
         return;
     const [x, y] = button.id.split(",");
     const tile = tiles.find(t => t.x === Number(x) && t.y === Number(y));
@@ -38,9 +38,9 @@ const clicked = (button) => {
             return;
         if (button.innerHTML === "&nbsp;")
             return;
-        const flags = adjanced.filter(t => document.getElementById(`${t.x},${t.y}`).innerHTML === `<i class="fa fa-flag"></i>`);
+        const flags = adjanced.filter(t => document.getElementById(`${t.x},${t.y}`).innerHTML === `<i class="fa fa-flag" aria-hidden="true"></i>`);
         if (Number(button.innerHTML) === flags.length) {
-            for (const adjancedTile of adjanced.filter(t => document.getElementById(`${t.x},${t.y}`).innerHTML !== `<i class="fa fa-flag"></i>` && !document.getElementById(`${t.x},${t.y}`).classList.contains("clicked"))) {
+            for (const adjancedTile of adjanced.filter(t => document.getElementById(`${t.x},${t.y}`).innerHTML !== `<i class="fa fa-flag" aria-hidden="true"></i>` && !document.getElementById(`${t.x},${t.y}`).classList.contains("clicked"))) {
                 const adjancedButton = document.getElementById(`${adjancedTile.x},${adjancedTile.y}`);
                 clicked(adjancedButton);
             }
@@ -49,11 +49,41 @@ const clicked = (button) => {
     else {
         button.classList.add("clicked");
         if (tile.isBomb) {
-            button.innerHTML = `<i class="fa fa-bomb"></i>`;
+            button.innerHTML = `<i class="fa fa-bomb" aria-hidden="true"></i>`;
         }
         else {
             let bombsAround = adjanced.filter(t => t.isBomb).length;
             if (bombsAround) {
+                let clr = "";
+                switch (bombsAround) {
+                    case 1:
+                        clr = "#0807C5";
+                        break;
+                    case 2:
+                        clr = "#028001";
+                        break;
+                    case 3:
+                        clr = "#FE0001";
+                        break;
+                    case 4:
+                        clr = "#000182";
+                        break;
+                    case 5:
+                        clr = "#810103";
+                        break;
+                    case 6:
+                        clr = "#008080";
+                        break;
+                    case 7:
+                        clr = "#000000";
+                        break;
+                    case 8:
+                        clr = "#808080";
+                        break;
+                    default:
+                        clr = "#FFFFFF";
+                }
+                button.style.color = clr;
                 button.innerHTML = String(bombsAround);
             }
             else {
@@ -68,12 +98,12 @@ const clicked = (button) => {
 const flagged = (button) => {
     if (button.classList.contains("clicked"))
         return;
-    if (button.innerHTML === `<i class="fa fa-flag"></i>`) {
+    if (button.innerHTML === `<i class="fa fa-flag" aria-hidden="true"></i>`) {
         button.innerHTML = "&nbsp;";
     }
     else {
-        if (button.innerHTML !== `<i class="fa fa-bomb"></i>`) {
-            button.innerHTML = `<i class="fa fa-flag"></i>`;
+        if (button.innerHTML !== `<i class="fa fa-bomb" aria-hidden="true"></i>`) {
+            button.innerHTML = `<i class="fa fa-flag" aria-hidden="true"></i>`;
         }
     }
 };
@@ -98,6 +128,7 @@ for (let i = 0; i < bombAmount; ++i) {
 }
 // Pridanie pola do HTML
 let i = 0;
+const gameDiv = document.getElementById("game");
 for (const tile of tiles) {
     const button = document.createElement("button");
     button.id = `${tile.x},${tile.y}`;
@@ -107,9 +138,9 @@ for (const tile of tiles) {
         flagged(e.target);
         e.preventDefault();
     }, false);
-    document.body.appendChild(button);
+    gameDiv.appendChild(button);
     if (++i / width === 1) {
-        document.body.appendChild(document.createElement("br"));
+        gameDiv.appendChild(document.createElement("br"));
         i = 0;
     }
 }
