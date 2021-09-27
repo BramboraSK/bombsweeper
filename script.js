@@ -1,4 +1,5 @@
 "use strict";
+let playing = true;
 // Funkcie
 const randIndex = (arr) => {
     return Math.floor(Math.random() * arr.length);
@@ -23,24 +24,30 @@ const getAdjanced = (tiles, tile, width, height) => {
         adjanced.push(tiles.find(t => t.x === tile.x + 1 && t.y === tile.y + 1));
     return adjanced;
 };
+const has = (button, className) => {
+    return button.classList.contains(className);
+};
 const clicked = (button) => {
+    if (!playing)
+        return;
     if (!button.id.includes(","))
         return;
-    if (button.innerHTML === `<i class="fa fa-flag" aria-hidden="true"></i>`)
+    if (has(button, "flag"))
         return;
     const [x, y] = button.id.split(",");
     const tile = tiles.find(t => t.x === Number(x) && t.y === Number(y));
     if (!tile)
         return;
     const adjanced = getAdjanced(tiles, tile, width, height);
+    console.log([...document.getElementById("game").children].filter(btn => !has(btn, "clicked")));
     if (button.classList.contains("clicked")) {
         if (tile.isBomb)
             return;
         if (button.innerHTML === "&nbsp;")
             return;
-        const flags = adjanced.filter(t => document.getElementById(`${t.x},${t.y}`).innerHTML === `<i class="fa fa-flag" aria-hidden="true"></i>`);
+        const flags = adjanced.filter(t => has(document.getElementById(`${t.x},${t.y}`), "flag"));
         if (Number(button.innerHTML) === flags.length) {
-            for (const adjancedTile of adjanced.filter(t => document.getElementById(`${t.x},${t.y}`).innerHTML !== `<i class="fa fa-flag" aria-hidden="true"></i>` && !document.getElementById(`${t.x},${t.y}`).classList.contains("clicked"))) {
+            for (const adjancedTile of adjanced.filter(t => !has(document.getElementById(`${t.x},${t.y}`), "flag") && !document.getElementById(`${t.x},${t.y}`).classList.contains("clicked"))) {
                 const adjancedButton = document.getElementById(`${adjancedTile.x},${adjancedTile.y}`);
                 clicked(adjancedButton);
             }
@@ -49,7 +56,9 @@ const clicked = (button) => {
     else {
         button.classList.add("clicked");
         if (tile.isBomb) {
-            button.innerHTML = `<i class="fa fa-bomb" aria-hidden="true"></i>`;
+            playing = false;
+            button.classList.add("bomb");
+            alert("Prehral si!");
         }
         else {
             let bombsAround = adjanced.filter(t => t.isBomb).length;
@@ -85,6 +94,10 @@ const clicked = (button) => {
                 }
                 button.style.color = clr;
                 button.innerHTML = String(bombsAround);
+                if ([...document.getElementById("game").getElementsByTagName("button")].filter(btn => !has(btn, "clicked")).length === bombAmount) {
+                    playing = false;
+                    alert("Vyhral si!");
+                }
             }
             else {
                 for (const adjancedTile of adjanced.filter(t => !document.getElementById(`${t.x},${t.y}`).classList.contains("clicked"))) {
@@ -96,14 +109,16 @@ const clicked = (button) => {
     }
 };
 const flagged = (button) => {
+    if (!playing)
+        return;
     if (button.classList.contains("clicked"))
         return;
-    if (button.innerHTML === `<i class="fa fa-flag" aria-hidden="true"></i>`) {
-        button.innerHTML = "&nbsp;";
+    if (has(button, "flag")) {
+        button.classList.remove("flag");
     }
     else {
-        if (button.innerHTML !== `<i class="fa fa-bomb" aria-hidden="true"></i>`) {
-            button.innerHTML = `<i class="fa fa-flag" aria-hidden="true"></i>`;
+        if (!has(button, "bomb")) {
+            button.classList.add("flag");
         }
     }
 };

@@ -7,14 +7,18 @@ body {
 button {
     font-size: 100%;
     font-family: "Press Start 2P", cursive;
-    border: 2px solid #C0C0C0;
-    background-color: #808080;
+    border: 1px solid #3469db;
+    background-color: #3498db;
     width: 45px;
     height: 45px;
 }
 
-i {
+img {
     pointer-events: none;
+    padding: 0;
+    margin: 0;
+    width: 25px;
+    height: 25px;
 }
 
 footer {
@@ -27,10 +31,14 @@ footer {
 }
 
 .clicked {
-    border: 2px solid #808080;
+    border: 1px solid #808080;
     background-color: #C0C0C0;
 }
 
-.fa-flag {
-    color: white;
+.flag {
+    background: #3498db url("img/flag.png") no-repeat center/25px;
+}
+
+.bomb {
+    background: #e74c3c url("img/bomb.png") no-repeat center/25px;
 }
