@@ -4,6 +4,11 @@ body {
     text-align: center;
 }
 
+body::after{
+    position: absolute; width: 0; height: 0; overflow: hidden; z-index:-1;
+    content: url("img/flag.png") url("img/bomb.png");
+ }
+
 button {
     font-size: 100%;
     font-family: "Press Start 2P", cursive;
