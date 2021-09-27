@@ -8,8 +8,8 @@ interface Tile {
 let playing = true;
 
 // Funkcie
-const randIndex = <T>(arr: T[]) => {
-    return Math.floor(Math.random() * arr.length);
+const rand = <T>(arr: T[]) => {
+    return arr[Math.floor(Math.random() * arr.length)];
 }
 
 const getAdjanced = (tiles: Tile[], tile: Tile, width: number, height: number) => {
@@ -31,7 +31,7 @@ const has = (button: (HTMLButtonElement), className: string) => {
     return button.classList.contains(className);
 }
 
-const clicked = (button: HTMLButtonElement) => {
+const clicked = (button: HTMLButtonElement, width: number, height: number, bombAmount: number) => {
     if(!playing) return;
     if(!button.id.includes(",")) return;
     if(has(button, "flag")) return;
@@ -51,13 +51,19 @@ const clicked = (button: HTMLButtonElement) => {
         if(Number(button.innerHTML) === flags.length) {
             for(const adjancedTile of adjanced.filter(t => !has(document.getElementById(`${t.x},${t.y}`) as HTMLButtonElement, "flag") && !document.getElementById(`${t.x},${t.y}`)!.classList.contains("clicked"))) {
                 const adjancedButton = document.getElementById(`${adjancedTile.x},${adjancedTile.y}`) as HTMLButtonElement;
-                clicked(adjancedButton);
+                clicked(adjancedButton, width, height, bombAmount);
             }
         }
     } else {
         button.classList.add("clicked");
 
         if(tile.isBomb) {
+            // if([...document.getElementById("game")!.getElementsByTagName("button")].filter(btn => has(btn as HTMLButtonElement, "clicked")).length === 1) {
+            //     document.getElementById("game")!.querySelectorAll("*").forEach(n => n.remove());
+            //     generate(tile);
+            //     return;
+            // }
+
             playing = false;
             button.classList.add("bomb");
             alert("Prehral si!");
@@ -105,7 +111,7 @@ const clicked = (button: HTMLButtonElement) => {
             } else {
                 for(const adjancedTile of adjanced.filter(t => !document.getElementById(`${t.x},${t.y}`)!.classList.contains("clicked"))) {
                     const adjancedButton = document.getElementById(`${adjancedTile.x},${adjancedTile.y}`) as HTMLButtonElement;
-                    clicked(adjancedButton);
+                    clicked(adjancedButton, width, height, bombAmount);
                 }
             }
         }
@@ -128,47 +134,57 @@ const flagged = (button: HTMLButtonElement) => {
 // Konstanty
 const tiles: Tile[] = [];
 
-const width = 10;
-const height = 10;
-const bombAmount = 10;
+const generate = (onload = false, lastClicked?: Tile) => {
+    if(!onload) location.reload();
+    playing = true;
 
-// Inicializacia pola
-for(let i = 0; i < 10; ++i) {
-    for(let j = 0; j < 10; ++j) {
-        tiles.push({
-            x: j,
-            y: i,
-            isBomb: false
-        });
+    const width = Number((document.getElementById("width") as HTMLInputElement).value);
+    const height = Number((document.getElementById("height") as HTMLInputElement).value);
+    const bombAmount = Number((document.getElementById("bombAmount") as HTMLInputElement).value);
+
+    // Inicializacia pola
+    for(let i = 0; i < height; ++i) {
+        for(let j = 0; j < width; ++j) {
+            tiles.push({
+                x: j,
+                y: i,
+                isBomb: false
+            });
+        }
     }
-}
 
-// Vytvorenie bomb
-for(let i = 0; i < bombAmount; ++i) {
-    tiles[randIndex(tiles)].isBomb = true;
-}
+    // Vytvorenie bomb
+    for(let i = 0; i < bombAmount; ++i) {
+        let random = rand(tiles.filter(t => !t.isBomb));
+        tiles[tiles.findIndex(t => t.x === random.x && t.y === random.y)].isBomb = true;
+    }
 
-// Pridanie pola do HTML
-let i = 0;
+    // Pridanie pola do HTML
+    let i = 0;
 
-const gameDiv = document.getElementById("game")!;
+    const gameDiv = document.getElementById("game")!;
 
-for(const tile of tiles) {
-    const button = document.createElement("button");
+    for(const tile of tiles) {
+        const button = document.createElement("button");
 
-    button.id = `${tile.x},${tile.y}`;
-    button.innerHTML = "&nbsp;";
+        button.id = `${tile.x},${tile.y}`;
+        button.innerHTML = "&nbsp;";
 
-    button.onclick = (e) => clicked(<HTMLButtonElement> e.target);
-    button.addEventListener("contextmenu", (e) => { 
-        flagged(<HTMLButtonElement> e.target);
-        e.preventDefault(); 
-    }, false);
+        button.onclick = (e) => clicked(<HTMLButtonElement> e.target, width, height, bombAmount);
+        button.addEventListener("contextmenu", (e) => { 
+            flagged(<HTMLButtonElement> e.target);
+            e.preventDefault(); 
+        }, false);
 
-    gameDiv.appendChild(button);
+        gameDiv.appendChild(button);
 
-    if(++i / width === 1) {
-        gameDiv.appendChild(document.createElement("br"));
-        i = 0;
+        if(++i / width === 1) {
+            gameDiv.appendChild(document.createElement("br"));
+            i = 0;
+        }
+    }
+
+    if(lastClicked) {
+        clicked(document.getElementById(`${lastClicked.x},${lastClicked.y}`) as HTMLButtonElement, width, height, bombAmount);
     }
 }

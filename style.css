@@ -4,26 +4,22 @@ body {
     text-align: center;
 }
 
-body::after{
+body::after {
     position: absolute; width: 0; height: 0; overflow: hidden; z-index:-1;
-    content: url("img/flag.png") url("img/bomb.png");
- }
+    content: url("img/flag.bmp") url("img/bomb.bmp");
+}
 
 button {
     font-size: 100%;
     font-family: "Press Start 2P", cursive;
     border: 1px solid #3469db;
     background-color: #3498db;
-    width: 45px;
-    height: 45px;
+    width: 50px;
+    height: 50px;
 }
 
-img {
-    pointer-events: none;
-    padding: 0;
-    margin: 0;
-    width: 25px;
-    height: 25px;
+input {
+    margin-bottom: 10px;
 }
 
 footer {
@@ -41,9 +37,9 @@ footer {
 }
 
 .flag {
-    background: #3498db url("img/flag.png") no-repeat center/25px;
+    background: #3498db url("img/flag.bmp") no-repeat center/60%;
 }
 
 .bomb {
-    background: #e74c3c url("img/bomb.png") no-repeat center/25px;
+    background: #e74c3c url("img/bomb.bmp") no-repeat center/60%;
 }

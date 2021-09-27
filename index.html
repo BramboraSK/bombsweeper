@@ -8,8 +8,16 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body>
+<body onload="generate(true)">
+    <input id="width" type="number" min="1" max="80" value="9">
+    <span>x</span>
+    <input id="height" type="number" min="1" max="80" value="9">
+    <span>&nbsp;&nbsp;&nbsp;<img src="img/bomb.bmp"></span>
+    <input id="bombAmount" type="number" min="1" max="999" value="10">
+    <input type="button" onclick="generate()" value="Vygenerovat">
+
     <div id="game"></div>
+
     <footer><a id="github" href="https://github.com/BramboraSK/bombsweeper"><i class="fa fa-github"></i></a></footer>
     <script src="script.js"></script>
 </body>
