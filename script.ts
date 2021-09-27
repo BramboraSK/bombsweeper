@@ -42,7 +42,6 @@ const clicked = (button: HTMLButtonElement) => {
     if(!tile) return;
 
     const adjanced = getAdjanced(tiles, tile, width, height);
-    console.log([...document.getElementById("game")!.children].filter(btn => !has(btn as HTMLButtonElement, "clicked")));
 
     if(button.classList.contains("clicked")) {
         if(tile.isBomb) return;
