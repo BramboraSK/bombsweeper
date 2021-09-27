@@ -135,7 +135,7 @@ const flagged = (button: HTMLButtonElement) => {
 const tiles: Tile[] = [];
 
 const generate = (onload = false, lastClicked?: Tile) => {
-    if(!onload) location.reload();
+    if(!onload) return location.reload();
     playing = true;
 
     const width = Number((document.getElementById("width") as HTMLInputElement).value);

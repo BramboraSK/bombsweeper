@@ -130,7 +130,7 @@ const flagged = (button) => {
 const tiles = [];
 const generate = (onload = false, lastClicked) => {
     if (!onload)
-        location.reload();
+        return location.reload();
     playing = true;
     const width = Number(document.getElementById("width").value);
     const height = Number(document.getElementById("height").value);
